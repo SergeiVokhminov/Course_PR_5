@@ -13,7 +13,7 @@
 
 1. Клонируйте репозиторий:
 '''
-git clone https://github.com/SergeiVokhminov/DRF_homework.git
+git clone https://github.com/SergeiVokhminov/Course_PR_5.git
 '''
 
 2. Установите зависимости:
