@@ -1,8 +1,10 @@
+# Импорт необходимых библиотек
 import os
 from datetime import timedelta
 from pathlib import Path
-
 from dotenv import load_dotenv
+
+load_dotenv(override=True)
 
 # BASE_DIR - определяет корневую директорию проекта.
 # BASE_DIR - этот параметр используется для построения абсолютных путей внутри проекта.
@@ -28,9 +30,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "django_filters",
+    "django_celery_beat",
+    "drf_yasg",
     "users",
-
 ]
 
 # Список промежуточного ПО, которое обрабатывает входящие запросы и выходящие ответы.
@@ -70,21 +75,14 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Настройки базы данных (Database - PostgreSQL). Использовать можно и другие базы данных.
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql_psycopg2",
-#         "NAME": os.getenv("DATABASE_NAME"),
-#         "USER": os.getenv("DATABASE_USER"),
-#         "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-#         "HOST": os.getenv("DATABASE_HOST"),
-#         "PORT": os.getenv("DATABASE_PORT"),
-#     }
-# }
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv("DATABASE_NAME"),
+        "USER": os.getenv("DATABASE_USER"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+        "HOST": os.getenv("DATABASE_HOST"),
+        "PORT": os.getenv("DATABASE_PORT", default="5432"),
     }
 }
 
@@ -121,9 +119,9 @@ USE_TZ = True
 
 # Настройки статических файлов.
 # Содержит информацию о URL для доступа к статическим файлам.
-STATIC_URL = "/static/"
+STATIC_URL = "static/"
 # Список директорий на диске, из которых будут подгружаться статические файлы.
-STATICFILES_DIRS = [BASE_DIR / "static"]
+# STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Настройки медиатеки.
 # Содержит информацию о URL для доступа к медиафайлам
@@ -146,18 +144,18 @@ EMAIL_PORT = 2525
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", False) == "True"
 EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", False) == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 
-LOGIN_URL = "users:login"
+# LOGIN_URL = "users:login"
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": os.getenv("LOCATION")
-    }
-}
+# CACHES = {
+#     "default": {
+#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
+#         "LOCATION": os.getenv("LOCATION"),
+#     }
+# }
 
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
@@ -176,3 +174,33 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
+
+STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
+
+# Настройки для Celery
+
+# URL-адрес брокера сообщений
+CELERY_BROKER_URL = os.getenv(
+    "CELERY_BROKER_URL"
+)  # Например, Redis, который по умолчанию работает на порту 6379
+
+# URL-адрес брокера результатов, также Redis
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
+
+# Часовой пояс для работы Celery
+CELERY_TIMEZONE = TIME_ZONE
+
+# Флаг отслеживания выполнения задач
+CELERY_TASK_TRACK_STARTED = True
+
+# Максимальное время на выполнение задачи
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+CELERY_BEAT_SCHEDULE = {
+    "task-name": {
+        "task": "user.tasks.user_last_login",
+        "schedule": timedelta(minutes=15),
+    },
+}
+
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
