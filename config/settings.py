@@ -129,13 +129,18 @@ MEDIA_URL = "/media/"
 # Директория на диске, где будут храниться медиафайлы, загружаемые пользователем.
 MEDIA_ROOT = BASE_DIR / "media"
 
+# Определяет тип поля по умолчанию для первичных ключей всех приложений
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Стандартная модель пользователя
 AUTH_USER_MODEL = "users.User"
 
+# Именованный адрес на который следует перенаправлять пользователя после успешной авторизации
 LOGIN_REDIRECT_URL = "/"
+# Именованный адрес на который перенаправляется пользователь после выхода
 LOGOUT_REDIRECT_URL = "/"
 
+# Настройка почтового сервера
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.mail.ru"
 EMAIL_PORT = 2525
@@ -148,15 +153,20 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 
+# Адрес на который следует перенаправить неавторизованного пользователя при попытке посетить закрытую страницу сайта
 # LOGIN_URL = "users:login"
 
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": os.getenv("LOCATION"),
-#     }
-# }
+# Настройка кэширования
+CACHE_ENABLED = True
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv("LOCATION")
+        }
+    }
 
+# Настройки для REST_FRAMEWORK
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
@@ -175,6 +185,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
+# Секретный ключ STRIPE
 STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
 
 # Настройки для Celery
@@ -196,11 +207,13 @@ CELERY_TASK_TRACK_STARTED = True
 # Максимальное время на выполнение задачи
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
+# Словарь с настройками расписания для задач в Celery Beat.
 CELERY_BEAT_SCHEDULE = {
     "task-name": {
-        "task": "user.tasks.user_last_login",
+        "task": "users.tasks.user_last_login",
         "schedule": timedelta(minutes=15),
     },
 }
 
+# Настройка, которая указывает, какой модуль и класс использовать для планировщика периодических задач в Celery.
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
