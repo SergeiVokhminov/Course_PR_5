@@ -6,8 +6,8 @@ from users.apps import UsersConfig
 from users.views import (
     UserCreateApiView,
     UserDeleteApiView,
-    UserListApiView,
     UserDetailApiView,
+    UserListApiView,
     UserUpdateApiView,
 )
 
