@@ -10,6 +10,7 @@ class UserTestCase(APITestCase):
 
     def setUp(self):
         """Подготовка исходных данных для тестов."""
+
         self.user = User.objects.create(
             email="test@test.com",
             first_name="Test",
@@ -22,6 +23,7 @@ class UserTestCase(APITestCase):
 
     def test_user_create(self):
         """Тест создания нового пользователя."""
+
         url = reverse("users:register")
         data = {
             "email": "new_test@test.com",
@@ -36,6 +38,7 @@ class UserTestCase(APITestCase):
 
     def test_user_list(self):
         """Тест получения списка всех пользователей."""
+
         url = reverse("users:user_list")
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -43,6 +46,7 @@ class UserTestCase(APITestCase):
 
     def test_user_detail(self):
         """Тест получения информации о пользователе."""
+
         url = reverse("users:user_detail", args=(self.user.id,))
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -51,6 +55,7 @@ class UserTestCase(APITestCase):
 
     def test_user_update(self):
         """Тест изменения информации о пользователе."""
+
         url = reverse("users:user_update", args=(self.user.id,))
         data = {"phone_number": "555"}
         response = self.client.patch(url, data=data)
@@ -60,6 +65,7 @@ class UserTestCase(APITestCase):
 
     def test_user_delete(self):
         """Тест удаления пользователя."""
+
         url = reverse("users:user_delete", args=(self.user.id,))
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
