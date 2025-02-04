@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "drf_yasg",
     "users",
+    "habittracker",
 ]
 
 # Список промежуточного ПО, которое обрабатывает входящие запросы и выходящие ответы.
@@ -218,3 +219,6 @@ CELERY_BEAT_SCHEDULE = {
 
 # Настройка, которая указывает, какой модуль и класс использовать для планировщика периодических задач в Celery.
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+TELEGRAM_URL = ""
+TELEGRAM_TOKEN = ""
