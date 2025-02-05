@@ -1,5 +1,6 @@
 from django.db import models
 
+# from config import settings
 from users.models import User
 
 
@@ -57,7 +58,7 @@ class Habit(models.Model):
         blank=True,
         null=True,
     )
-    time_to_complete = models.IntegerField(
+    duration = models.IntegerField(
         verbose_name="Время на выполнение привычки в секундах",
         help_text="Введите время за которое выполните привычку",
         default=120,
