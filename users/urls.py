@@ -25,8 +25,8 @@ urlpatterns = [
         name="token_refresh",
     ),
     path("register/", UserCreateApiView.as_view(), name="register"),
-    path("user/list/", UserListApiView.as_view(), name="user_list"),
-    path("user/detail/<int:pk>/", UserDetailApiView.as_view(), name="user_detail"),
-    path("user/update/<int:pk>/", UserUpdateApiView.as_view(), name="user_update"),
-    path("user/delete/<int:pk>/", UserDeleteApiView.as_view(), name="user_delete"),
+    path("list/", UserListApiView.as_view(), name="user_list"),
+    path("detail/<int:pk>/", UserDetailApiView.as_view(), name="user_detail"),
+    path("update/<int:pk>/", UserUpdateApiView.as_view(), name="user_update"),
+    path("delete/<int:pk>/", UserDeleteApiView.as_view(), name="user_delete"),
 ]
