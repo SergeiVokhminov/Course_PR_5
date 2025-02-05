@@ -220,5 +220,6 @@ CELERY_BEAT_SCHEDULE = {
 # Настройка, которая указывает, какой модуль и класс использовать для планировщика периодических задач в Celery.
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
-TELEGRAM_URL = ""
-TELEGRAM_TOKEN = ""
+# Настройки телеграм
+TELEGRAM_URL = os.getenv("TELEGRAM_URL")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
