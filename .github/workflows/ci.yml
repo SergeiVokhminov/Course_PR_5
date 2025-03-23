@@ -1,4 +1,4 @@
-name: CoursePR CI
+name: PR CI
 
 on: [push, pull_request]
 
@@ -45,7 +45,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles("**/requirements.txt") }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -59,38 +59,38 @@ jobs:
         env:
           SECRET_KEY: test_secret_key
 
-#  build:
-#      needs: test
-#      runs-on: ubuntu-latest
-#
-#      steps:
-#      - name: Check out code
-#        uses: actions/checkout@v3
-#
-#      - name: Login DockerHub
-#        run: echo ${{ secrets.DOCKER_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-#
-#      - name: Build image
-#        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }} .
-#
-#      - name: Push image
-#        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-#
+  build:
+      needs: test
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Login in Docker Hub
+        run: echo ${{ secrets.DOCKER_ACCESS_TOKEN }} | docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }} .
+
+      - name: Push Docker image in Docker Hub
+        run: docker push ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+
 #  deploy:
 #      needs: build
 #      runs-on: ubuntu-latest
 #
 #      steps:
-#        - name: Set up SSH
-#          uses: webfactory/ssh-agent@v0.9.0
-#          with:
-#            ssh-private-key: ${{ secrets.SSH_KEY }}
+#      - name: Set up SSH
+#        uses: webfactory/ssh-agent@v0.9.0
+#        with:
+#          ssh-private-key: ${{ secrets.SSH_KEY }}
 #
-#        - name: Deploy to server
-#          run: |
-#            ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-#            docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-#            docker stop myapp || true
-#            docker rm myapp || true
-#            docker-compose up -d --build
-#            EOF
+#      - name: Deploy to Server
+#        run: |
+#          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << "EOF"
+#          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+#          docker stop myapp || true
+#          docker rm myapp || true
+#          docker run -d --name myapp -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+#          EOF
