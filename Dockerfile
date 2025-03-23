@@ -22,7 +22,7 @@ RUN mkdir -p /app/static
 RUN mkdir -p /app/staticfiles && chmod -R 755 /app/staticfiles
 
 # Копируем исходный код приложения в контейнер
-COPY . .
+COPY . /app/
 
 # Пробрасываем порт, который будет использовать Django
 EXPOSE 8000
