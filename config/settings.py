@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
     "rest_framework",
     "rest_framework_simplejwt",
     "django_filters",
@@ -93,7 +94,7 @@ else:
             "NAME": os.getenv("DATABASE_NAME"),
             "USER": os.getenv("DATABASE_USER"),
             "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-            "HOST": os.getenv("DATABASE_HOST"),
+            "HOST": os.getenv("DATABASE_HOST", default="db"),
             "PORT": os.getenv("DATABASE_PORT", default="5432"),
         }
     }
