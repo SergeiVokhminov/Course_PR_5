@@ -1,5 +1,6 @@
 # Импорт необходимых библиотек
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -20,7 +21,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True if os.getenv("DEBUG") == "True" else False
 
 # Список разрешенных доменов (используется "*" для разрешения всех), которые могут обслуживаться приложением.
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Содержит список всех приложений, активированных в проекте.
 # После создания своих приложений, их необходимо прописать тут!
@@ -77,16 +78,25 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Настройки базы данных (Database - PostgreSQL). Использовать можно и другие базы данных.
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("DATABASE_NAME"),
-        "USER": os.getenv("DATABASE_USER"),
-        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
-        "HOST": os.getenv("DATABASE_HOST"),
-        "PORT": os.getenv("DATABASE_PORT", default="5432"),
+if "test" in sys.argv:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "test_db.sqlite3",
+        }
     }
-}
+
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": os.getenv("DATABASE_NAME"),
+            "USER": os.getenv("DATABASE_USER"),
+            "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+            "HOST": os.getenv("DATABASE_HOST"),
+            "PORT": os.getenv("DATABASE_PORT", default="5432"),
+        }
+    }
 
 # Список валидаторов, используемых для проверки надежности паролей пользователей.
 AUTH_PASSWORD_VALIDATORS = [
@@ -123,7 +133,8 @@ USE_TZ = True
 # Содержит информацию о URL для доступа к статическим файлам.
 STATIC_URL = "static/"
 # Список директорий на диске, из которых будут подгружаться статические файлы.
-# STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Настройки медиатеки.
 # Содержит информацию о URL для доступа к медиафайлам
